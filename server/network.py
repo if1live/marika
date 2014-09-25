@@ -19,7 +19,13 @@ class EventSerializer(object):
 
 
 class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
-    def handle(self):
+    """
+    http://stackoverflow.com/questions/14417080/prevent-a-request-getting-closed-in-python-socketserver
+    """
+    def setup(self):
+        print('{}:{} connected'.format(*self.client_address))
+
+    def run_cycle(self):
         data = self.request.recv(1024)
         cur_thread = threading.current_thread()
 
@@ -32,6 +38,18 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         serializer = EventSerializer()
         response = serializer.serialize(val)
         self.request.sendall(response)
+
+    def handle(self):
+        try:
+            while True:
+                self.run_cycle()
+        except socket.error as e:
+            pass
+
+
+    def finish(self):
+        print('{}:{} disconnected'.format(*self.client_address))
+
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     pass
