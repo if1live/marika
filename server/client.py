@@ -3,6 +3,7 @@
 import config
 import json
 import socket
+import network
 
 def client(ip, port, message):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -10,10 +11,11 @@ def client(ip, port, message):
     try:
         sock.sendall(message)
         response = sock.recv(1024)
-        data = json.loads(response)
+        serializer = network.EventSerializer()
+        data = serializer.deserialize(response)
         print(data)
     finally:
         sock.close()
 
 if __name__ == '__main__':
-    client(config.HOST, config.PORT, "Hello World 1")
+    client(config.HOST, config.PORT, "request")
