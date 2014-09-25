@@ -7,8 +7,8 @@ import sys
 
 if __name__ == '__main__':
     server = network.init_network()
-    device = devices.LeapMotionDevice()
-    #device = devices.FakeDevice()
+    #device = devices.LeapMotionDevice()
+    device = devices.FakeDevice()
 
     print('press enter to quit...')
     try:

@@ -8,6 +8,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
 
 import Leap
 import events
+import Tkinter
+from Tkinter import Tk, Frame, BOTH, IntVar, DoubleVar, Button
+from ttk import Label, Scale, Style, Label
+import math
 
 def vector_to_tuple(v):
     return (v.x, v.y, v.z)
@@ -85,5 +89,102 @@ class LeapMotionDevice(object):
         self.controller.remove_listener(self.listener)
 
 
+class FakeDeviceApp(Frame):
+    MIN_X = 0
+    MAX_X = 50
+    MIN_Y = 0
+    MAX_Y = 100
+    MIN_Z = 0
+    MAX_Z = 200
+
+    def __init__(self, parent):
+        Frame.__init__(self, parent, background='white')
+        self.parent = parent
+        self.init_ui()
+
+    def init_ui(self):
+        self.parent.title('Fake Device')
+        self.style = Style()
+        self.style.theme_use('default')
+
+        self.pack(fill=BOTH, expand=1)
+
+        x_scale = Scale(self, from_=self.MIN_X, to=self.MAX_X, command=self.on_scale_x)
+        x_scale.place(x=0, y=0)
+
+        y_scale = Scale(self, from_=self.MIN_Y, to=self.MAX_Y, command=self.on_scale_y)
+        y_scale.place(x=0, y=20)
+
+        z_scale = Scale(self, from_=self.MIN_Z, to=self.MAX_Z, command=self.on_scale_z)
+        z_scale.place(x=0, y=40)
+
+        angle_scale = Scale(self, from_=0, to=math.pi/2, command=self.on_scale_angle)
+        angle_scale.place(x=0, y=80)
+
+        self.x_var = IntVar()
+        self.x_label = Label(self, text=0, textvariable=self.x_var)
+        self.x_label.place(x=100, y=0)
+
+        self.y_var = IntVar()
+        self.y_label = Label(self, text=0, textvariable=self.y_var)
+        self.y_label.place(x=100, y=20)
+
+        self.z_var = IntVar()
+        self.z_label = Label(self, text=0, textvariable=self.z_var)
+        self.z_label.place(x=100, y=40)
+
+        self.angle_var = DoubleVar()
+        self.angle_label = Label(self, text=0, textvariable=self.angle_var)
+        self.angle_label.place(x=100, y=80)
+
+        self.button = Button(self, text='test', command=self.on_button)
+        self.button.place(x=0, y=100)
+
+    def on_button(self):
+        print('hello')
+
+    def on_scale_angle(self, val):
+        v = float(val)
+        self.angle_var.set(v)
+        self.update()
+
+
+    def on_scale_x(self, val):
+        v = int(float(val))
+        self.x_var.set(v)
+        self.update()
+
+    def on_scale_y(self, val):
+        v = int(float(val))
+        self.y_var.set(v)
+        self.update()
+
+    def on_scale_z(self, val):
+        v = int(float(val))
+        self.z_var.set(v)
+        self.update()
+
+    def update(self):
+        x = self.x_var.get()
+        y = self.y_var.get()
+        z = self.z_var.get()
+        angle = self.angle_var.get()
+
+        sensor = events.sensor_storage
+        sensor.reset()
+        if not (x == 0 and y == 0 and z == 0):
+            index_pos = [x, y, z]
+            sensor.index_finger_pos = index_pos
+            sensor.cmd_angle = angle
+
+
+
 class FakeDevice(object):
-    pass
+    def __init__(self):
+        root = Tk()
+        root.geometry('250x150+300+300')
+        app = FakeDeviceApp(root)
+        root.mainloop()
+
+    def __del__(self):
+        pass

@@ -32,7 +32,6 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
         sensor = events.sensor_storage
         val = {
             'index_pos': sensor.index_finger_pos,
-            'thumb_pos': sensor.thumb_finger_pos,
             'angle': sensor.cmd_angle,
         }
         serializer = EventSerializer()
