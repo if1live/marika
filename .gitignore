@@ -79,3 +79,7 @@ target/
 #####################
 # custom
 clientAndroid/
+
+# unity assets
+UnityTestTools/
+UnityTestTools.meta

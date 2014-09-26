@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraInitializer : MonoBehaviour {
+public class CameraInitializer : MonoBehaviour 
+{
 
 	void Start () {
 	    // camera
