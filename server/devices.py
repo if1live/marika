@@ -13,6 +13,19 @@ from Tkinter import Tk, Frame, BOTH, IntVar, DoubleVar, Button
 from ttk import Label, Scale, Style, Label
 import math
 
+DEVICE_LEAP_MOTION = 1
+DEVICE_FAKE = 2
+
+def create_device(code):
+    if code in (DEVICE_LEAP_MOTION, 'default'):
+        print 'create leap motion device'
+        return LeapMotionDevice()
+    elif code in (DEVICE_FAKE, 'fake'):
+        print 'create fake device'
+        return FakeDevice()
+    else:
+        raise AssertionError('not valid device code')
+
 def vector_to_tuple(v):
     return (v.x, v.y, v.z)
 
